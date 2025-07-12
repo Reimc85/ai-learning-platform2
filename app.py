@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import openai
+from openai import OpenAI
 import os
 from dotenv import load_dotenv
 import logging
@@ -26,8 +26,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# OpenAI configuration
-openai.api_key = os.environ.get('OPENAI_API_KEY')
+# OpenAI configuration - Updated for latest API
+client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
 # Database Models
 class Learner(db.Model):
@@ -121,25 +121,71 @@ def create_session(learner_id):
             return jsonify({'error': 'Learner not found'}), 404
         
         data = request.get_json()
-        topic = data.get('topic', 'General Learning')
+        topic = data.get('topic', 'Personalized Learning Session')
         
-        # Generate AI content based on learner's profile
+        # Enhanced AI content generation with better prompts
         try:
-            if openai.api_key:
-                response = openai.ChatCompletion.create(
+            if client.api_key:
+                response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[
-                        {"role": "system", "content": f"You are an AI tutor. Create personalized learning content for a {learner.experience_level} level learner interested in {learner.learning_goals}."},
-                        {"role": "user", "content": f"Create a learning session about {topic}. Include key concepts, examples, and practice exercises."}
+                        {
+                            "role": "system", 
+                            "content": f"""You are an expert AI tutor specializing in {learner.learning_goals}. 
+                            Create engaging, personalized learning content for a {learner.experience_level} level learner. 
+                            Use a friendly, encouraging tone and include practical examples. 
+                            Structure your response with clear sections and actionable steps."""
+                        },
+                        {
+                            "role": "user", 
+                            "content": f"""Create a comprehensive learning session about {topic} for {learner.username}. 
+                            
+                            Please include:
+                            1) 🎯 Learning Objectives (what they'll achieve)
+                            2) 📚 Key Concepts (core ideas explained simply)
+                            3) 💡 Real-World Examples (practical applications)
+                            4) 🛠️ Hands-On Activity (something they can do right now)
+                            5) ✅ Quick Check (way to verify understanding)
+                            
+                            Make it engaging and appropriate for {learner.experience_level} level in {learner.learning_goals}."""
+                        }
                     ],
-                    max_tokens=500
+                    max_tokens=1000,
+                    temperature=0.7
                 )
                 ai_content = response.choices[0].message.content
             else:
-                ai_content = f"Welcome to your personalized learning session on {topic}! This content is tailored for your {learner.experience_level} level in {learner.learning_goals}."
+                ai_content = f"""🎯 **Welcome to Your Personalized Learning Session!**
+
+**Topic:** {topic}
+**Tailored for:** {learner.experience_level} level in {learner.learning_goals}
+
+📚 **What You'll Learn:**
+This session is specifically designed for your current skill level and learning goals.
+
+💡 **Key Focus Areas:**
+- Core concepts in {learner.learning_goals}
+- Practical applications you can use immediately
+- Step-by-step guidance for {learner.experience_level} learners
+
+🛠️ **Next Steps:**
+Ready to dive deeper? Use the 'Generate Practice Content' button to get personalized exercises!
+
+*Note: Connect your OpenAI API key for fully personalized AI-generated content.*"""
         except Exception as ai_error:
             logger.warning(f"OpenAI API error: {ai_error}")
-            ai_content = f"Welcome to your learning session on {topic}! Let's explore this topic step by step."
+            ai_content = f"""🎯 **Learning Session: {topic}**
+
+Welcome {learner.username}! This session is designed for your {learner.experience_level} level in {learner.learning_goals}.
+
+📚 **Session Overview:**
+Let's explore {topic} with content tailored specifically for you.
+
+💡 **Learning Path:**
+We'll build on your current knowledge and help you advance to the next level.
+
+🛠️ **Ready to Practice?**
+Click 'Generate Practice Content' for personalized exercises!"""
         
         session = LearningSession(
             learner_id=learner_id,
@@ -156,7 +202,7 @@ def create_session(learner_id):
             'topic': session.topic,
             'content': session.content,
             'progress': session.progress,
-            'message': 'Learning session created successfully!'
+            'message': '🎉 Learning session created successfully!'
         }), 201
         
     except Exception as e:
@@ -195,32 +241,94 @@ def generate_content():
             db.session.add(learner)
             db.session.commit()
         
-        # Generate AI content
+        # Enhanced AI content generation with much better prompts
         try:
-            if openai.api_key:
-                response = openai.ChatCompletion.create(
+            if client.api_key:
+                response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[
-                        {"role": "system", "content": f"You are an AI tutor creating practice content for a {learner.experience_level} learner studying {learner.learning_goals}."},
-                        {"role": "user", "content": "Generate 3 practice questions with explanations that would help this learner improve their skills."}
+                        {
+                            "role": "system", 
+                            "content": f"""You are an expert AI tutor creating practice content for {learner.username}, 
+                            a {learner.experience_level} learner studying {learner.learning_goals}. 
+                            Create engaging, challenging, and practical exercises that build real skills. 
+                            Use emojis and clear formatting to make content visually appealing."""
+                        },
+                        {
+                            "role": "user", 
+                            "content": f"""Generate 3 diverse, engaging practice exercises for {learner.learning_goals} at {learner.experience_level} level.
+
+                            For each exercise, include:
+                            - 🎯 Clear objective
+                            - 📋 Step-by-step instructions  
+                            - ⏱️ Estimated time to complete
+                            - 🏆 Success criteria
+                            
+                            Exercise types to include:
+                            1) 🛠️ **Hands-On Project** - Something they can build/create
+                            2) 🧩 **Problem-Solving Challenge** - A real-world scenario to solve
+                            3) 🎮 **Interactive Learning Game** - A fun way to practice skills
+                            
+                            Make each exercise specific, actionable, and directly relevant to {learner.learning_goals}.
+                            Tailor the difficulty and complexity for {learner.experience_level} level."""
+                        }
                     ],
-                    max_tokens=400
+                    max_tokens=800,
+                    temperature=0.8
                 )
                 ai_content = response.choices[0].message.content
             else:
-                ai_content = """Here are 3 personalized practice questions for you:
+                ai_content = f"""🎯 **Personalized Practice Content for {learner.username}**
 
-1. **Concept Application**: Apply the key principles we've discussed to solve a real-world scenario.
+**Tailored for:** {learner.experience_level} level in {learner.learning_goals}
 
-2. **Critical Thinking**: Analyze the relationship between different concepts and explain how they connect.
+## 🛠️ **Exercise 1: Hands-On Project**
+⏱️ *Time: 30-45 minutes*
 
-3. **Practical Exercise**: Create a small project that demonstrates your understanding of the material.
+Create a practical project that applies {learner.learning_goals} concepts. Start with the fundamentals and build something you can use in real life.
 
-Each question is designed to match your current skill level and learning goals!"""
+🏆 **Success Criteria:** Complete a working example that demonstrates your understanding.
+
+## 🧩 **Exercise 2: Problem-Solving Challenge**  
+⏱️ *Time: 20-30 minutes*
+
+Analyze a real-world scenario related to {learner.learning_goals}. Break down the problem, identify key components, and propose a solution.
+
+🏆 **Success Criteria:** Present a clear solution with reasoning.
+
+## 🎮 **Exercise 3: Interactive Learning Game**
+⏱️ *Time: 15-25 minutes*
+
+Engage with {learner.learning_goals} concepts through an interactive challenge. Test your knowledge while having fun!
+
+🏆 **Success Criteria:** Complete the challenge and identify areas for improvement.
+
+---
+💡 **Pro Tip:** Each exercise builds on the previous one. Complete them in order for the best learning experience!
+
+*Connect your OpenAI API key for fully personalized, detailed exercises!*"""
         
         except Exception as ai_error:
             logger.warning(f"OpenAI API error: {ai_error}")
-            ai_content = "✨ **Personalized Practice Content Generated!**\n\nBased on your learning profile, here are some tailored exercises to help you progress. This content adapts to your skill level and focuses on areas where you can improve the most."
+            ai_content = f"""✨ **Personalized Practice Content Generated for {learner.username}!**
+
+🎯 **Tailored for your {learner.experience_level} level in {learner.learning_goals}**
+
+## 📚 **Practice Exercises:**
+
+### 1. 🛠️ **Concept Application**
+Apply the key principles we've discussed to solve a real-world scenario in {learner.learning_goals}.
+
+### 2. 🧠 **Critical Thinking Challenge**  
+Analyze the relationship between different concepts and explain how they connect in practical applications.
+
+### 3. 🎯 **Practical Project**
+Create a small project that demonstrates your understanding of {learner.learning_goals} at the {learner.experience_level} level.
+
+---
+💡 **Each exercise is designed to match your current skill level and learning goals!**
+
+🚀 **Ready to level up?** Complete these exercises and track your progress."""
         
         # Create a new session with the generated content
         session = LearningSession(
@@ -237,7 +345,7 @@ Each question is designed to match your current skill level and learning goals!"
             'success': True,
             'content': ai_content,
             'session_id': session.id,
-            'message': '🎉 Practice content generated successfully!'
+            'message': '🎉 Personalized practice content generated successfully!'
         }), 200
         
     except Exception as e:
@@ -265,4 +373,3 @@ def health_check():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
-
