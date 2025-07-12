@@ -111,3 +111,15 @@ input, select {
   white-space: pre-wrap;
 }
 
+/* Success Banner Styles */
+.success-banner {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px 16px;
+  margin: 20px auto;
+  width: 80%;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+}
