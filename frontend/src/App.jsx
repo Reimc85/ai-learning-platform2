@@ -75,13 +75,20 @@ function OnboardingFlow() {
           experience_level: formData.experience
         });
         
-        if (result.id) {
-          // Store learner ID and navigate to dashboard
-          localStorage.setItem('learnerId', result.id);
-          navigate('/dashboard');
-        } else {
-          alert('Error creating learner profile. Please try again.');
-        }
+  if (result.id) {
+  // Store learner ID and navigate to dashboard
+  localStorage.setItem('learnerId', result.id);
+  navigate('/dashboard', {
+    state: {
+      success: true,
+      username: formData.username
+    }
+  });
+} else {
+  alert('Error creating learner profile. Please try again.');
+}
+
+
       } catch (error) {
         console.error('Error:', error);
         alert('Error creating learner profile. Please try again.');
