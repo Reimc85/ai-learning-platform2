@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
 
 // API configuration
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
-
 
 // API helper functions
 const api = {
@@ -75,19 +74,18 @@ function OnboardingFlow() {
           experience_level: formData.experience
         });
         
-  if (result.id) {
-  // Store learner ID and navigate to dashboard
-  localStorage.setItem('learnerId', result.id);
-  navigate('/dashboard', {
-    state: {
-      success: true,
-      username: formData.username
-    }
-  });
-} else {
-  alert('Error creating learner profile. Please try again.');
-}
-
+        if (result.id) {
+          // Store learner ID and navigate to dashboard
+          localStorage.setItem('learnerId', result.id);
+          navigate('/dashboard', {
+            state: {
+              success: true,
+              username: formData.username
+            }
+          });
+        } else {
+          alert('Error creating learner profile. Please try again.');
+        }
 
       } catch (error) {
         console.error('Error:', error);
@@ -191,9 +189,24 @@ function Dashboard() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState('');
+  const [welcomeMessage, setWelcomeMessage] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const learnerId = localStorage.getItem('learnerId') || '1';
+
+  useEffect(() => {
+    if (location.state?.success && location.state.username) {
+      setWelcomeMessage(`✅ Welcome, ${location.state.username}! Your learning journey has started.`);
+      
+      // Optional: Clear the message after 5 seconds
+      const timeout = setTimeout(() => {
+        setWelcomeMessage('');
+      }, 5000);
+
+      return () => clearTimeout(timeout); // Clean up
+    }
+  }, [location.state]);
 
   const handleStartSession = async () => {
     setLoading(true);
@@ -248,7 +261,7 @@ function Dashboard() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadSessions();
   }, [learnerId]);
 
@@ -260,6 +273,9 @@ function Dashboard() {
       </header>
       
       <div className="dashboard">
+        {/* Display the welcome message */}
+        {welcomeMessage && <div className="success-banner">{welcomeMessage}</div>}
+        
         <div className="dashboard-section">
           <h2>Quick Actions</h2>
           <button 
@@ -366,4 +382,3 @@ function App() {
 }
 
 export default App;
-
