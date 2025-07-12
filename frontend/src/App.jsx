@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
+// Image imports
+import AiHead from './icons/AI-Head.png';
+import AiScreen from './icons/AI-Screen.png';
 
 // API configuration
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
@@ -337,34 +340,39 @@ function Home() {
         <h1>Personalized AI Learning Platform</h1>
         <p>Delivering personalized education by leveraging AI to dynamically generate content and adapt learning paths</p>
       </header>
-      
+
       <div>
         <h2>Welcome to the Future of Learning</h2>
-        <p style={{ textAlign: 'center' }}>
-  <br />
-  Juggling work, family, and personal growth? <br />
-  <br />
-  This platform is built for you. Learn smarter, not harder — with AI-driven lessons that fit your schedule, cut through the noise, and focus only on what you need. <br />
-  <br />
-  Upgrade your skills on your time, whether it’s 9 PM after the kids are asleep or early Sunday morning before the world wakes up. <br />
-  <br />
-  Start your journey today — your future self will thank you.
-</p>
+        <p style={{ textAlign: 'center', fontSize: '1.2rem' }}>
+          <br />
+          Juggling work, family, and personal growth? <br /><br />
+          This platform is built for you. Learn smarter, not harder — with AI-driven lessons that fit your schedule, cut through the noise, and focus only on what you need. <br /><br />
+          Upgrade your skills on your time, whether it’s 9 PM after the kids are asleep or early Sunday morning before the world wakes up. <br /><br />
+          Start your journey today — your future self will thank you.
+        </p>
 
-        
         <button onClick={() => navigate('/onboarding')}>
           Start Learning Now
         </button>
-        
+
         <button onClick={() => navigate('/onboarding')}>
           Get Started
         </button>
-        
+
         <div style={{ marginTop: '40px' }}>
           <h3>Key Features:</h3>
-          <ul style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto' }}>
-            <li>🧠 AI-powered personalization</li>
-            <li>📚 Adaptive learning content</li>
+
+          <div style={{ textAlign: 'center', margin: '40px 0' }}>
+            <img src={AiHead} alt="AI-powered personalization" style={{ width: '80px', height: '80px' }} />
+            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>AI-powered personalization</p>
+          </div>
+
+          <div style={{ textAlign: 'center', margin: '40px 0' }}>
+            <img src={AiScreen} alt="Adaptive learning content" style={{ width: '80px', height: '80px' }} />
+            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Adaptive learning content</p>
+          </div>
+
+          <ul style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
             <li>📊 Progress tracking</li>
             <li>🎯 Goal-oriented learning paths</li>
             <li>💡 Intelligent content generation</li>
