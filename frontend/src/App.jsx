@@ -3,9 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import './App.css';
 
 // API configuration
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' // Use relative URLs in production
-  : 'http://localhost:5000'; // Use localhost in development
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+
 
 // API helper functions
 const api = {
