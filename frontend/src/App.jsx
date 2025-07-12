@@ -340,10 +340,13 @@ function Home() {
       
       <div>
         <h2>Welcome to the Future of Learning</h2>
-        <p>
-          Juggling work, family, and personal growth? This platform is built for you. Learn smarter, not harder — with AI-driven lessons that fit your schedule, cut through the noise, and focus only on what you need. Upgrade your skills on your time, whether it’s 9 PM after the kids are asleep or early Sunday morning before the world wakes up.
-Start your journey today — your future self will thank you.
-        </p>
+        <p style={{ textAlign: 'center' }}>
+  Juggling work, family, and personal growth? <br />
+  This platform is built for you. Learn smarter, not harder — with AI-driven lessons that fit your schedule, cut through the noise, and focus only on what you need. <br />
+  Upgrade your skills on your time, whether it’s 9 PM after the kids are asleep or early Sunday morning before the world wakes up. <br />
+  Start your journey today — your future self will thank you.
+</p>
+
         
         <button onClick={() => navigate('/onboarding')}>
           Start Learning Now
