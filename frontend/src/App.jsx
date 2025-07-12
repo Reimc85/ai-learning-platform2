@@ -272,10 +272,10 @@ function Dashboard() {
         <p>Your Personalized Learning Dashboard</p>
       </header>
       
+      {/* Display the welcome message */}
+      {welcomeMessage && <div className="success-banner">{welcomeMessage}</div>}
+      
       <div className="dashboard">
-        {/* Display the welcome message */}
-        {welcomeMessage && <div className="success-banner">{welcomeMessage}</div>}
-        
         <div className="dashboard-section">
           <h2>Quick Actions</h2>
           <button 
