@@ -369,7 +369,7 @@ function Home() {
 
           <div style={{ textAlign: 'center', margin: '40px 0' }}>
             <img src={AiScreen} alt="Adaptive learning content" style={{ width: '320px', height: '320px' }} />
-            <p style={{ fontSize: '1.3rem', marginTop: '10px', color: 'blue' }}>Adaptive learning content</p>
+            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Adaptive learning content</p>
           </div>
 
           <ul style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
