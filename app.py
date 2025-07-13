@@ -68,7 +68,7 @@ def create_learner():
 
     return jsonify({'id': learner.id}), 201
 
-@app.route('/api/learners/<int:learner_id>/session', methods=['POST'])
+@app.route('/api/learners/<int:learner_id>/sessions', methods=['POST'])
 def generate_learning_session(learner_id):
     learner = Learner.query.get(learner_id)
     if not learner:
