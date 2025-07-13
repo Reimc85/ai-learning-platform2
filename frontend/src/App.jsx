@@ -358,10 +358,6 @@ function Home() {
           Start Learning Now
         </button>
 
-        <button onClick={() => navigate('/onboarding')}>
-          Get Started
-        </button>
-
         <div style={{ marginTop: '40px' }}>
           <h3>Key Features:</h3>
 
@@ -396,6 +392,12 @@ function Home() {
     </div>
   );
 }
+
+
+        <button onClick={() => navigate('/onboarding')}>
+          Get Started Now
+        </button>
+
 
 // Main App Component with Router
 function App() {
