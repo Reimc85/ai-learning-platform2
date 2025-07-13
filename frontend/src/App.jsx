@@ -385,7 +385,11 @@ function Home() {
             <img src={Progress} alt="Progress tracking" style={{ width: '320px', height: '320px' }} />
             <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Progress tracking</p>
           </div>
+
           
+        <button onClick={() => navigate('/onboarding')}>
+          Get Started Now
+        </button>
          
         </div>
       </div>
@@ -394,9 +398,6 @@ function Home() {
 }
 
 
-        <button onClick={() => navigate('/onboarding')}>
-          Get Started Now
-        </button>
 
 
 // Main App Component with Router
