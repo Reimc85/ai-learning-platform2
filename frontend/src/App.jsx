@@ -4,6 +4,9 @@ import './App.css';
 // Image imports
 import AiHead from './icons/AI-Head.png';
 import AiScreen from './icons/AI-Screen.png';
+import Goals from './icons/goals.png';
+import Intelligent from './icons/intelligent.png';
+import Progress from './icons/progress.png';
 
 // API configuration
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
@@ -364,19 +367,30 @@ function Home() {
 
           <div style={{ textAlign: 'center', margin: '40px 0' }}>
             <img src={AiHead} alt="AI-powered personalization" style={{ width: '320px', height: '320px' }} />
-            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>AI-powered personalization</p>
+            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>AI-Powered Personalization</p>
           </div>
 
           <div style={{ textAlign: 'center', margin: '40px 0' }}>
             <img src={AiScreen} alt="Adaptive learning content" style={{ width: '320px', height: '320px' }} />
-            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Adaptive learning content</p>
+            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Adaptive Learning Content</p>
           </div>
 
-          <ul style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
-            <li>📊 Progress tracking</li>
-            <li>🎯 Goal-oriented learning paths</li>
-            <li>💡 Intelligent content generation</li>
-          </ul>
+          <div style={{ textAlign: 'center', margin: '40px 0' }}>
+            <img src={Goals} alt="Goal-Oriented Learning Paths" style={{ width: '320px', height: '320px' }} />
+            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Goal-Oriented Learning Paths</p>
+          </div>
+
+          <div style={{ textAlign: 'center', margin: '40px 0' }}>
+            <img src={Intelligent} alt="Intelligent content generation" style={{ width: '320px', height: '320px' }} />
+            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Intelligent Content Generation</p>
+          </div>
+
+           <div style={{ textAlign: 'center', margin: '40px 0' }}>
+            <img src={Progress} alt="Progress tracking" style={{ width: '320px', height: '320px' }} />
+            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Progress tracking</p>
+          </div>
+          
+         </ul>
         </div>
       </div>
     </div>
