@@ -58,7 +58,8 @@ function OnboardingFlow() {
   const [formData, setFormData] = useState({
     username: '',
     learningGoals: '',
-    experience: 'beginner'
+    experience: 'beginner',
+    learningStyle: 'combination'
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ function OnboardingFlow() {
   };
 
   const handleNext = async () => {
-    if (step < 3) {
+    if (step < 4) {
       setStep(step + 1);
     } else {
       // Complete onboarding
@@ -77,11 +78,11 @@ function OnboardingFlow() {
         const result = await api.createLearner({
           username: formData.username,
           learning_goals: formData.learningGoals,
-          experience_level: formData.experience
+          experience_level: formData.experience,
+          learning_style: formData.learningStyle
         });
-        
+
         if (result.id) {
-          // Store learner ID and navigate to dashboard
           localStorage.setItem('learnerId', result.id);
           navigate('/dashboard', {
             state: {
@@ -114,10 +115,10 @@ function OnboardingFlow() {
         <h1>Welcome to AI Learning Platform</h1>
         <p>Let's personalize your learning experience</p>
       </header>
-      
+
       <div className="onboarding">
-        <h2>Step {step} of 3</h2>
-        
+        <h2>Step {step} of 4</h2>
+
         {step === 1 && (
           <div>
             <h3>What's your name?</h3>
@@ -132,29 +133,27 @@ function OnboardingFlow() {
             </div>
           </div>
         )}
-        
+
         {step === 2 && (
           <div>
-            <h3>What would you like to learn?</h3>
+            <h3>Which programming language would you like to learn?</h3>
             <div className="form-group">
-              <label>Learning Goals:</label>
+              <label>Learning Goal (Programming Language):</label>
               <select
                 value={formData.learningGoals}
                 onChange={(e) => handleInputChange('learningGoals', e.target.value)}
               >
-                <option value="">Select your learning goal</option>
-                <option value="Programming">Programming</option>
-                <option value="Data Science">Data Science</option>
-                <option value="Digital Marketing">Digital Marketing</option>
-                <option value="Design">Design</option>
-                <option value="Business">Business</option>
-                <option value="Languages">Languages</option>
-                <option value="Other">Other</option>
+                <option value="">Select a language</option>
+                <option value="Python">Python</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="Java">Java</option>
+                <option value="C#">C#</option>
+                <option value="C++">C++</option>
               </select>
             </div>
           </div>
         )}
-        
+
         {step === 3 && (
           <div>
             <h3>What's your experience level?</h3>
@@ -171,18 +170,36 @@ function OnboardingFlow() {
             </div>
           </div>
         )}
-        
+
+        {step === 4 && (
+          <div>
+            <h3>How do you prefer to learn?</h3>
+            <div className="form-group">
+              <label>Learning Style:</label>
+              <select
+                value={formData.learningStyle}
+                onChange={(e) => handleInputChange('learningStyle', e.target.value)}
+              >
+                <option value="combination">Combination</option>
+                <option value="visual">Visual</option>
+                <option value="audio">Audio</option>
+                <option value="hands-on">Hands-On</option>
+              </select>
+            </div>
+          </div>
+        )}
+
         <div>
           {step > 1 && (
             <button onClick={handleBack} disabled={loading}>
               Back
             </button>
           )}
-          <button 
-            onClick={handleNext} 
+          <button
+            onClick={handleNext}
             disabled={loading || (step === 1 && !formData.username) || (step === 2 && !formData.learningGoals)}
           >
-            {loading ? 'Creating Profile...' : (step === 3 ? 'Complete Setup' : 'Next')}
+            {loading ? 'Creating Profile...' : (step === 4 ? 'Complete Setup' : 'Next')}
           </button>
         </div>
       </div>
@@ -190,7 +207,6 @@ function OnboardingFlow() {
   );
 }
 
-// Dashboard Component
 function Dashboard() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -204,13 +220,8 @@ function Dashboard() {
   useEffect(() => {
     if (location.state?.success && location.state.username) {
       setWelcomeMessage(`✅ Welcome, ${location.state.username}! Your learning journey has started.`);
-      
-      // Optional: Clear the message after 5 seconds
-      const timeout = setTimeout(() => {
-        setWelcomeMessage('');
-      }, 5000);
-
-      return () => clearTimeout(timeout); // Clean up
+      const timeout = setTimeout(() => setWelcomeMessage(''), 5000);
+      return () => clearTimeout(timeout);
     }
   }, [location.state]);
 
@@ -218,13 +229,9 @@ function Dashboard() {
     setLoading(true);
     setResult('');
     try {
-      const sessionResult = await api.createSession(learnerId, {
-        topic: 'Personalized Learning Session'
-      });
-      
+      const sessionResult = await api.createSession(learnerId, { topic: 'Personalized Learning Session' });
       if (sessionResult.id) {
         setResult(`✅ ${sessionResult.message}\n\nTopic: ${sessionResult.topic}\n\nContent: ${sessionResult.content}`);
-        // Refresh sessions list
         loadSessions();
       } else {
         setResult(`❌ Error: ${sessionResult.error || 'Failed to create session'}`);
@@ -242,10 +249,8 @@ function Dashboard() {
     setResult('');
     try {
       const contentResult = await api.generateContent(learnerId);
-      
       if (contentResult.success) {
         setResult(`✅ ${contentResult.message}\n\n${contentResult.content}`);
-        // Refresh sessions list
         loadSessions();
       } else {
         setResult(`❌ ${contentResult.message || 'Failed to generate content'}`);
@@ -277,38 +282,29 @@ function Dashboard() {
         <h1>AI Learning Platform</h1>
         <p>Your Personalized Learning Dashboard</p>
       </header>
-      
-      {/* Display the welcome message */}
+
       {welcomeMessage && <div className="success-banner">{welcomeMessage}</div>}
-      
+
       <div className="dashboard">
         <div className="dashboard-section">
           <h2>Quick Actions</h2>
-          <button 
-            onClick={handleStartSession} 
-            disabled={loading}
-          >
+          <button onClick={handleStartSession} disabled={loading}>
             {loading ? 'Loading...' : 'Start Session'}
           </button>
-          
-          <button 
-            onClick={handleGenerateContent} 
-            disabled={loading}
-          >
+          <button onClick={handleGenerateContent} disabled={loading}>
             {loading ? 'Loading...' : 'Generate Practice Content'}
           </button>
-          
           <button onClick={() => navigate('/onboarding')}>
             Update Profile
           </button>
         </div>
-        
+
         {result && (
           <div className={`result ${result.includes('❌') ? 'error' : 'success'}`}>
             {result}
           </div>
         )}
-        
+
         <div className="dashboard-section">
           <h2>Your Learning Sessions</h2>
           {sessions.length > 0 ? (
@@ -318,9 +314,7 @@ function Dashboard() {
                   <h3>{session.topic}</h3>
                   <p>Progress: {session.progress}%</p>
                   <p>Created: {new Date(session.created_at).toLocaleDateString()}</p>
-                  <div className="session-content">
-                    {session.content}
-                  </div>
+                  <div className="session-content">{session.content}</div>
                 </li>
               ))}
             </ul>
@@ -333,7 +327,6 @@ function Dashboard() {
   );
 }
 
-// Home Component (Landing Page)
 function Home() {
   const navigate = useNavigate();
 
