@@ -390,7 +390,7 @@ function Home() {
             <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Progress tracking</p>
           </div>
           
-         </ul>
+         
         </div>
       </div>
     </div>
