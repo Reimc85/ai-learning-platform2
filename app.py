@@ -78,20 +78,121 @@ def generate_learning_session(learner_id):
     topic = data.get('topic', 'Introduction to Programming')
 
     prompt = f"""
-You are a senior software engineering tutor and AI educator. Your job is to create a highly detailed, user-friendly training program for someone who wants to learn {learner.learning_goals} and has {learner.experience_level} experience. Their preferred learning style is {learner.learning_style}.
+You are an expert AI-powered software engineering instructor and curriculum developer. Your task is to generate a **complete, structured, beginner-friendly training module** for someone who wants to learn **{learner.learning_goals}**. The learner has **{learner.experience_level}** experience and prefers a **{learner.learning_style}** learning style.
 
-Design a complete, beginner-accessible session broken into clear sections. Include practical steps, interactive tests, and real code examples compatible with Visual Studio Code on Windows. Assume the user has zero setup completed and minimal technical background.
+Assume the learner:
+- Is starting from scratch
+- Is using a **Windows PC**
+- Will use **Visual Studio Code** as their development environment
+- Has no prior programming or setup knowledge
+- Will complete the course in self-paced, modular steps on a web-based learning platform
 
-Topic: {topic}
+Structure the training module in the following SECTIONS. Use **clear markdown formatting** and keep explanations extremely detailed and descriptive. Use a **conversational, friendly tone**, avoid jargon, and **explain every step as if teaching a beginner**.
 
-The program must be broken into the following sections:
+---
 
-1. Vocabulary
-2. Common Uses
-3. Language Overview + Setup
-4. Real-World Code Examples
-5. Section-by-Section Quizzes (with answer keys)
-6. Final Challenge
+### 🔠 1. Vocabulary (20+ terms)
+For each key programming term:
+- Define it clearly in plain English
+- Provide **detailed, beginner-safe explanation**
+- Include a complete code example (in {learner.learning_goals}) with:
+  - Inline comments explaining every line
+  - Real-world use case in a sentence
+- Terms to cover must include: variable, function, loop, condition, list/array, string, integer, boolean, class/object, syntax, IDE, comment, error, and more
+
+---
+
+### 💡 2. Common Uses of {learner.learning_goals}
+List 5–8 **practical applications** of this language. For each one:
+- Describe the use case in plain English
+- Explain any technical terms used (e.g., “web framework”, “data pipeline”, etc.)
+- Include real-world context (e.g., “Used by Instagram to build their backend”)
+- Suggest relevant tools or libraries, with explanations (e.g., “Flask is a lightweight web framework that lets you build websites using Python”)
+- Add a **video resource** (YouTube preferred) matched to {learner.learning_style}
+
+---
+
+### 🛠️ 3. Language Overview + Setup (Beginner-Safe)
+Create a full walkthrough for setting up {learner.learning_goals} on Windows using **Visual Studio Code**.
+
+For each step:
+- Give precise, numbered instructions
+- Include a plain-English explanation of WHY the step is necessary
+- Tell the user what they should expect to see on screen
+- Recommend **YouTube video tutorials** suited to {learner.learning_style} that demonstrate the setup visually
+
+Must include:
+1. Installing the language runtime (e.g., Python, Java JDK)
+2. Installing Visual Studio Code
+3. Installing the required language extensions in VS Code
+4. Creating the first project folder
+5. Creating the first source code file
+6. Writing and running a “Hello World” program
+
+---
+
+### 💻 4. Real-World Code Examples (Copy-Paste Ready + Teaching Instructions)
+Provide 2–3 fully runnable examples that:
+- Solve beginner-appropriate problems
+- Are **realistic** and immediately useful
+- Come with **detailed inline code comments** explaining every single line
+- Use consistent indentation, naming, and clarity
+- Include instructions such as:
+  - Open VS Code
+  - Create a new file named `example_name.py`
+  - Copy and paste the code
+  - How to run it in the terminal or using “Run Python File in Terminal”
+  - What output to expect
+  - What common errors could occur and how to fix them
+
+---
+
+### 🧪 5. Section Quizzes (Auto-Scored + Separated Answer Key)
+After each section above (Vocabulary, Common Uses, Setup, Real Examples), provide:
+- A short **quiz with 3–5 questions**
+- Use a mix of formats:
+  - Multiple Choice
+  - True/False
+  - Code Analysis (“What does this do?”)
+- Each question must be **tagged** with the concept it tests (e.g., `[Variables]`, `[Loops]`)
+- **Important**: Show **only the questions first**, followed by a clearly separated section titled `Answer Key`
+- After each answer in the key, include:
+  - Correct answer
+  - Short explanation of why it’s correct
+  - Concept tag again (to support tracking weaknesses)
+- Include **scoring instructions** at the top of each quiz:
+  > "Score yourself: +1 for each correct answer. Keep track of incorrect answers and their tags — these will be used later to recommend personalized next steps."
+
+---
+
+### 🧠 6. Final Exam (10 Questions)
+- Create 10 diverse questions covering **all content from the module**
+- Use a mix of formats: MCQ, True/False, code output, small debugging task
+- Tag each question with a concept (e.g., `[Syntax]`, `[Functions]`)
+- Present all questions in one block
+- Below that, add an `Answer Key` section with:
+  - Correct answer
+  - Explanation
+  - Associated tag
+- **Scoring Instructions**:
+  > “Tally your score out of 10. Record the tags from any questions you missed. These tags will be used to determine your areas of improvement.”
+
+---
+
+### 📈 DO NOT Generate the Next Topics Section
+This comes only **after** the final exam is completed and analyzed. The AI system will use incorrect answers and their concept tags to identify weak areas and recommend specific topics matched to the user's learning style.
+
+---
+
+### 🎓 Format & Style Reminders
+- Use markdown headings and bolding for clear readability
+- Use beginner-friendly, conversational tone (no jargon, no assumptions)
+- Always explain *why* something is being done
+- Include visuals (e.g., screenshots or video links) when helpful
+- Comment every line of code
+- Tag every quiz/exam question for concept tracking
+
+
 """
 
     try:
