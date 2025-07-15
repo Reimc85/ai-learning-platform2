@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import './App.css';
+
 // Image imports
 import AiHead from './icons/AI-Head.png';
 import AiScreen from './icons/AI-Screen.png';
@@ -11,14 +13,11 @@ import Progress from './icons/progress.png';
 // API configuration
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
-// API helper functions
 const api = {
   createLearner: async (learnerData) => {
     const response = await fetch(`${API_BASE_URL}/api/learners`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(learnerData),
     });
     return response.json();
@@ -27,9 +26,7 @@ const api = {
   createSession: async (learnerId, sessionData) => {
     const response = await fetch(`${API_BASE_URL}/api/learners/${learnerId}/sessions`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(sessionData),
     });
     return response.json();
@@ -43,9 +40,7 @@ const api = {
   generateContent: async (learnerId) => {
     const response = await fetch(`${API_BASE_URL}/api/generate-content`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ learner_id: learnerId }),
     });
     return response.json();
@@ -72,7 +67,6 @@ function OnboardingFlow() {
     if (step < 4) {
       setStep(step + 1);
     } else {
-      // Complete onboarding
       setLoading(true);
       try {
         const result = await api.createLearner({
@@ -93,7 +87,6 @@ function OnboardingFlow() {
         } else {
           alert('Error creating learner profile. Please try again.');
         }
-
       } catch (error) {
         console.error('Error:', error);
         alert('Error creating learner profile. Please try again.');
@@ -104,9 +97,7 @@ function OnboardingFlow() {
   };
 
   const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
+    if (step > 1) setStep(step - 1);
   };
 
   return (
@@ -214,7 +205,6 @@ function Dashboard() {
   const [welcomeMessage, setWelcomeMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-
   const learnerId = localStorage.getItem('learnerId') || '1';
 
   useEffect(() => {
@@ -231,7 +221,6 @@ function Dashboard() {
     try {
       const sessionResult = await api.createSession(learnerId, { topic: 'Personalized Learning Session' });
       if (sessionResult.id) {
-        setResult(`✅ ${sessionResult.message}\n\nTopic: ${sessionResult.topic}\n\nContent: ${sessionResult.content}`);
         loadSessions();
       } else {
         setResult(`❌ Error: ${sessionResult.error || 'Failed to create session'}`);
@@ -249,12 +238,10 @@ function Dashboard() {
     setResult('');
     try {
       const contentResult = await api.generateContent(learnerId);
-      if (contentResult.success) {
-        setResult(`✅ ${contentResult.message}\n\n${contentResult.content}`);
-        loadSessions();
-      } else {
+      if (!contentResult.success) {
         setResult(`❌ ${contentResult.message || 'Failed to generate content'}`);
       }
+      loadSessions();
     } catch (error) {
       console.error('Error:', error);
       setResult('❌ Error: Failed to connect to the server. Please try again.');
@@ -299,10 +286,8 @@ function Dashboard() {
           </button>
         </div>
 
-        {result && (
-          <div className={`result ${result.includes('❌') ? 'error' : 'success'}`}>
-            {result}
-          </div>
+        {result && result.includes('❌') && (
+          <div className="result error">{result}</div>
         )}
 
         <div className="dashboard-section">
@@ -312,9 +297,11 @@ function Dashboard() {
               {sessions.map((session) => (
                 <li key={session.id} className="session-item">
                   <h3>{session.topic}</h3>
-                  <p>Progress: {session.progress}%</p>
+                  <p>Progress: {session.progress || 0}%</p>
                   <p>Created: {new Date(session.created_at).toLocaleDateString()}</p>
-                  <div className="session-content">{session.content}</div>
+                  <ReactMarkdown className="session-content">
+                    {session.content}
+                  </ReactMarkdown>
                 </li>
               ))}
             </ul>
@@ -347,53 +334,29 @@ function Home() {
           Start your journey today — your future self will thank you.
         </p>
 
-        <button onClick={() => navigate('/onboarding')}>
-          Start Learning Now
-        </button>
+        <button onClick={() => navigate('/onboarding')}>Start Learning Now</button>
 
         <div style={{ marginTop: '40px' }}>
           <h3>Key Features:</h3>
+          {[{ img: AiHead, label: "AI-Powered Personalization" },
+            { img: AiScreen, label: "Adaptive Learning Content" },
+            { img: Goals, label: "Goal-Oriented Learning Paths" },
+            { img: Intelligent, label: "Intelligent Content Generation" },
+            { img: Progress, label: "Progress Tracking" }].map(({ img, label }) => (
+              <div style={{ textAlign: 'center', margin: '40px 0' }} key={label}>
+                <img src={img} alt={label} style={{ width: '320px', height: '320px' }} />
+                <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>{label}</p>
+              </div>
+            ))
+          }
 
-          <div style={{ textAlign: 'center', margin: '40px 0' }}>
-            <img src={AiHead} alt="AI-powered personalization" style={{ width: '320px', height: '320px' }} />
-            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>AI-Powered Personalization</p>
-          </div>
-
-          <div style={{ textAlign: 'center', margin: '40px 0' }}>
-            <img src={AiScreen} alt="Adaptive learning content" style={{ width: '320px', height: '320px' }} />
-            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Adaptive Learning Content</p>
-          </div>
-
-          <div style={{ textAlign: 'center', margin: '40px 0' }}>
-            <img src={Goals} alt="Goal-Oriented Learning Paths" style={{ width: '320px', height: '320px' }} />
-            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Goal-Oriented Learning Paths</p>
-          </div>
-
-          <div style={{ textAlign: 'center', margin: '40px 0' }}>
-            <img src={Intelligent} alt="Intelligent content generation" style={{ width: '320px', height: '320px' }} />
-            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Intelligent Content Generation</p>
-          </div>
-
-           <div style={{ textAlign: 'center', margin: '40px 0' }}>
-            <img src={Progress} alt="Progress tracking" style={{ width: '320px', height: '320px' }} />
-            <p style={{ fontSize: '1.3rem', marginTop: '10px' }}>Progress tracking</p>
-          </div>
-
-          
-        <button onClick={() => navigate('/onboarding')}>
-          Get Started Now
-        </button>
-         
+          <button onClick={() => navigate('/onboarding')}>Get Started Now</button>
         </div>
       </div>
     </div>
   );
 }
 
-
-
-
-// Main App Component with Router
 function App() {
   return (
     <Router>
