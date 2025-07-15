@@ -23,10 +23,16 @@ button {
   border-radius: 4px;
   cursor: pointer;
   margin: 10px;
+  transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 button:disabled {
@@ -69,7 +75,8 @@ label {
   font-weight: bold;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
@@ -88,6 +95,7 @@ input, select {
   margin: 20px 0;
   border-radius: 8px;
   border: 1px solid #dee2e6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .session-list {
@@ -101,14 +109,64 @@ input, select {
   margin: 10px 0;
   border-radius: 4px;
   border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .session-content {
   margin-top: 10px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
   white-space: pre-wrap;
+}
+
+/* Markdown-style enhancements */
+.session-content h1,
+.session-content h2,
+.session-content h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  color: #222;
+}
+
+.session-content ul,
+.session-content ol {
+  padding-left: 1.5rem;
+  margin: 1em 0;
+}
+
+.session-content li {
+  margin-bottom: 0.5em;
+}
+
+.session-content code {
+  background-color: #f1f1f1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+}
+
+.session-content pre {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.session-content a {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.session-content a:hover {
+  color: #0056b3;
 }
 
 /* Success Banner Styles */
@@ -122,4 +180,22 @@ input, select {
   border-radius: 8px;
   font-size: 1rem;
   text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .App,
+  .dashboard,
+  .onboarding {
+    padding: 10px;
+  }
+
+  .dashboard-section {
+    padding: 15px;
+  }
+
+  button {
+    width: 100%;
+    margin: 10px 0;
+  }
 }
